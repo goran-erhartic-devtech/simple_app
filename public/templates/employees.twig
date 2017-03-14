@@ -8,11 +8,16 @@
 
 <h1>Employees:</h1>
 
-<p>Name: {{ obj.name }}<br>
-    Age: {{ obj.age }}<br>
-    Deparment: {{ obj.department }}<br>
-    Project: {{ obj.project }}<br>
-    Active: {{ obj.isActive }}</p>
+<ul>
+    {% for user in obj %}
+        <h3>User:</h3>
+        Name: {{ user.name }}<br>
+        Age: {{ user.age }}<br>
+        Deparment: {{ user.department }}<br>
+        Project: {{ user.project }}<br>
+        Active: {{ user.isActive }}
+    {% endfor %}
+</ul>
 
 </body>
 </html>

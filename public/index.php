@@ -7,15 +7,26 @@
  */
 require_once(__DIR__ . '/../bootstrap/bootstrap.php');
 
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/employees', function () {
-        $aa = new \GE\Person\Employee();
-        $aa->setName("Igor")->setAge(33)->setDepartment('PHP')->setIsActive(true)->setProject("Onboarding");
-        return $aa;
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($db) {
+//start of Employee CRUD
+    $r->addRoute('GET', '/employees', function () use ($db) {
+        return $db->getAll();
     });
-    $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) {
-        echo "This will return Employee with this id: " . $vars['id'];
+    $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($db) {
+        return $db->getOne($vars['id']);
     });
+    $r->addRoute('POST', '/employee', function () use ($db) {
+        return $db->create($_POST);
+    });
+    $r->addRoute('DELETE', '/employee/{id:\d+}', function ($vars) use ($db) {
+        return $db->delete($vars['id']);
+    });
+    $r->addRoute('PUT', '/employee/{id:\d+}', function ($vars) use ($db) {
+        parse_str(file_get_contents('php://input'), $_PUT);
+        return $db->update($vars['id'], $_PUT);
+    });
+//end of Employee CRUD
+    
     $r->addRoute('GET', '/managers', function () {
         $aa = new \GE\Person\Manager();
         $aa->setName("Goran")->setAge(31)->setProject(array("one", "two", "three"));
@@ -54,21 +65,13 @@ switch ($routeInfo[0]) {
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
 
-        //Twig template engine initialization
-        $loader = new Twig_Loader_Filesystem('templates');
-        $twig = new Twig_Environment($loader, array(
-            'auto_reload' => true,
-            'cache' => '/cache'
-        ));
-
         $obj = call_user_func($handler, $vars);
-        if (is_file(substr('/templates/' . $_SERVER['REQUEST_URI'], 1) . '.twig')) {
-            $template = $twig->load(substr($_SERVER['REQUEST_URI'], 1) . '.twig')->render(array(
-                'obj' => $obj
-            ));
-            echo $template;
-        }
-
+        //if (is_file(substr('/templates/' . $_SERVER['REQUEST_URI'], 1) . '.twig')) {
+        $template = $twig->load('employee.twig')->render(array(
+            'obj' => $obj
+        ));
+        echo $template;
+        //}
         break;
 }
 
