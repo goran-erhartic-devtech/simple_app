@@ -13,4 +13,4 @@
     - GET   - '/employee/{id}'      (return employee by ID)
     - POST  - '/employee'           (create new employee: Name(str), Age(int), Project(str), Department(str), isActive(tinyint))
     - PUT   - '/employee.{id}'      (edit employee with ID: Name(str), Age(int), Project(str), Department(str), isActive(tinyint))
-    *PUT and POST through 'x-www.form-urlencoded'
+    *PUT and POST through 'x-www-form-urlencoded'

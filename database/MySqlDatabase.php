@@ -17,8 +17,12 @@ class MySqlDatabase
     public function __construct($connection = null)
     {
         if ($this->connection === null) {
-            $this->connection = new PDO("mysql:host=localhost;dbname=guest", 'root', 'root');
+            try{
+                $this->connection = new PDO("mysql:host=localhost;dbname=guest", 'root', 'root');
+                $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            }catch (PDOException $e) {
+                echo 'Connection failed: ' . $e->getMessage();
+            }
         }
     }
-
 }

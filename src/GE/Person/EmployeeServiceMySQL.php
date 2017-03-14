@@ -12,14 +12,25 @@ class EmployeeServiceMySQL extends \MySqlDatabase
 {
     public function getOne($id)
     {
-        $stmt = $this->connection->prepare("SELECT * from employees WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $result = $stmt->fetch();
+        if ($this->connection) {
+            try {
+                $stmt = $this->connection->prepare("SELECT * from employees WHERE id = :id");
+                $stmt->bindParam(':id', $id);
+                $stmt->execute();
+                $result = $stmt->fetch();
 
-        $viewEmployee = new Employee();
-        $viewEmployee->setName($result['Name'])->setAge($result['Age'])->setProject($result['Project'])->setDepartment($result['Department'])->setIsActive($result['isActive']);
-        return $viewEmployee;
+                $viewEmployee = new Employee();
+                $viewEmployee->setName($result['Name'])->setAge($result['Age'])->setProject($result['Project'])->setDepartment($result['Department'])->setIsActive($result['isActive']);
+                if (!$result) {
+                    throw new \PDOException("User with ID: " . $id . " not found");
+                } else {
+                    return $viewEmployee;
+                }
+            } catch (\PDOException $e) {
+                echo $e->getMessage();
+                die();
+            }
+        } else die();
     }
 
     public function getAll()
@@ -44,7 +55,7 @@ class EmployeeServiceMySQL extends \MySqlDatabase
             "department" => $result['Department'],
             "isActive" => $result['isActive']
         ));
-        return true;
+        echo "Employee created";
     }
 
     public function update($id, $result)
@@ -58,8 +69,13 @@ class EmployeeServiceMySQL extends \MySqlDatabase
 
     public function delete($id)
     {
-        $stmt = $this->connection->prepare('DELETE FROM employees WHERE id = :id');
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        try {
+            $stmt = $this->connection->prepare('DELETE FROM employees WHERE id = :id');
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            echo $stmt->rowCount();
+        } catch (PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
     }
 }
