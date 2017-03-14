@@ -76,28 +76,25 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     public function update($id, $result)
     {
         try {
-            $this->tryGetById($id);
+            $existingEmployee = $this->tryGetById($id);
             $stmt = $this->connection->prepare('UPDATE employees SET Name = :name, Age = :age, Project = :project, Department = :department, isActive = :isActive WHERE id = :id');
-            if (empty($result['Name']) || !ctype_alpha($result['Name'])) {
-                throw new \PDOException("Name must not be empty, and cannot have any numeric characters!");
-            } else {
-                $stmt->execute(array(
-                    ':id' => $id,
-                    ':name' => $result['Name'],
-                    ":age" => $result['Age'],
-                    ":project" => $result['Project'],
-                    ":department" => $result['Department'],
-                    ":isActive" => $result['isActive']
-                ));
-                echo "Employee updated";
-            }
+
+            $stmt->execute(array(
+                ':id' => $id,
+                ':name' => $result['Name'] ? $result['Name'] : $existingEmployee['Name'],
+                ":age" => $result['Age'] ? $result['Age'] : $existingEmployee['Age'],
+                ":project" => $result['Project'] ? $result['Project'] : $existingEmployee['Project'],
+                ":department" => $result['Department'] ? $result['Department'] : $existingEmployee['Department'],
+                ":isActive" => $result['isActive'] ? $result['isActive'] : $existingEmployee['isActive']
+            ));
+            echo "Employee updated";
+            
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
     }
 
-    public
-    function delete($id)
+    public function delete($id)
     {
         try {
             $this->tryGetById($id);
