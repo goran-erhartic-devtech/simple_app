@@ -26,7 +26,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
         return $db->update($vars['id'], $_PUT);
     });
 //end of Employee CRUD
-    
+
     $r->addRoute('GET', '/managers', function () {
         $aa = new \GE\Person\Manager();
         $aa->setName("Goran")->setAge(31)->setProject(array("one", "two", "three"));
