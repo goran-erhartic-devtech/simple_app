@@ -8,21 +8,15 @@
  */
 class MySqlDatabase
 {
-    public $connection;
-
-    /**
-     * MySqlDatabase constructor.
-     * @param $connection
-     */
-    public function __construct($connection = null)
+    public function __construct()
     {
-        if ($this->connection === null) {
-            try{
-                $this->connection = new PDO("mysql:host=localhost;dbname=guest", 'root', 'root');
-                $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            }catch (PDOException $e) {
-                echo 'Connection failed: ' . $e->getMessage();
-            }
+        try {
+            $this->connection = new PDO("mysql:host=localhost;dbname=guest", 'root', 'root');
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo 'Connection failed: ' . $e->getMessage();
+            die();
         }
+
     }
 }
