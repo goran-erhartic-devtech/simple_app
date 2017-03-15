@@ -11,7 +11,7 @@ class MySqlDatabase
     public function __construct()
     {
         try {
-            $this->connection = new PDO("mysql:host=localhost;dbname=guest", 'root', 'root');
+            $this->connection = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             echo 'Connection failed: ' . $e->getMessage();
@@ -20,3 +20,5 @@ class MySqlDatabase
 
     }
 }
+//initiate connection to database and enable functions from service class
+$db = new \GE\Person\EmployeeServiceMySQL();
