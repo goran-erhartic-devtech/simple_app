@@ -41,8 +41,10 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     public function getAll()
     {
         $allEmployees = array();
+        $stmt = $this->connection->prepare("SELECT * from employees");
+        $stmt->execute();
 
-        foreach ($this->connection->query("SELECT * from employees") as $result) {
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $result) {
             $viewEmployee = new Employee();
             $viewEmployee->setName($result['Name'])->setAge($result['Age'])->setProject($result['Project'])->setDepartment($result['Department'])->setIsActive($result['isActive']);
             array_push($allEmployees, $viewEmployee);
@@ -54,20 +56,15 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     {
         try {
             $stmt = $this->connection->prepare("INSERT INTO employees (Name, Age, Project, Department, isActive) VALUES (:fname, :age, :project, :department, :isActive)");
-            if ($result['Name'] === '') {
-                throw new \PDOException("Name cannot be empty!");
-            } elseif ($result['Age'] === '') {
-                throw new \PDOException("Age cannot be empty!");
-            } else {
-                $stmt->execute(array(
-                    "fname" => $result['Name'],
-                    "age" => $result['Age'],
-                    "project" => $result['Project'],
-                    "department" => $result['Department'],
-                    "isActive" => $result['isActive']
-                ));
-                echo "Employee created";
-            }
+
+            $stmt->execute(array(
+                "fname" => $result['Name'] ? $result['Name'] : null,
+                "age" => $result['Age'] ? $result['Age'] : null,
+                "project" => $result['Project'],
+                "department" => $result['Department'],
+                "isActive" => $result['isActive']
+            ));
+            echo "Employee created";
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
@@ -88,7 +85,7 @@ class EmployeeServiceMySQL extends \MySqlDatabase
                 ":isActive" => $result['isActive'] ? $result['isActive'] : $existingEmployee['isActive']
             ));
             echo "Employee updated";
-            
+
         } catch (\PDOException $e) {
             echo $e->getMessage();
         }
