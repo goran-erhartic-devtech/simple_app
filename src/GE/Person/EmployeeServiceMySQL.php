@@ -8,11 +8,18 @@
  */
 namespace GE\Person;
 
-class EmployeeServiceMySQL extends \MySqlDatabase
+class EmployeeServiceMySQL
 {
+
+    public function __construct()
+    {
+        $connection = \MySqlDatabase::getInstance();
+        $this->db = $connection->getConnection();
+    }
+
     public function tryGetById($id)
     {
-        $stmt = $this->connection->prepare("SELECT * from employees WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT * from employees WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
@@ -41,7 +48,7 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     public function getAll()
     {
         $allEmployees = array();
-        $stmt = $this->connection->prepare("SELECT * from employees");
+        $stmt = $this->db->prepare("SELECT * from employees");
         $stmt->execute();
 
         foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $result) {
@@ -55,7 +62,7 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     public function create($result)
     {
         try {
-            $stmt = $this->connection->prepare("INSERT INTO employees (Name, Age, Project, Department, isActive) VALUES (:fname, :age, :project, :department, :isActive)");
+            $stmt = $this->db->prepare("INSERT INTO employees (Name, Age, Project, Department, isActive) VALUES (:fname, :age, :project, :department, :isActive)");
 
             $stmt->execute(array(
                 "fname" => $result['Name'] ? $result['Name'] : null,
@@ -65,8 +72,10 @@ class EmployeeServiceMySQL extends \MySqlDatabase
                 "isActive" => $result['isActive']
             ));
             echo "Employee created";
+            return true;
         } catch (\PDOException $e) {
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -74,7 +83,7 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     {
         try {
             $existingEmployee = $this->tryGetById($id);
-            $stmt = $this->connection->prepare('UPDATE employees SET Name = :name, Age = :age, Project = :project, Department = :department, isActive = :isActive WHERE id = :id');
+            $stmt = $this->db->prepare('UPDATE employees SET Name = :name, Age = :age, Project = :project, Department = :department, isActive = :isActive WHERE id = :id');
 
             $stmt->execute(array(
                 ':id' => $id,
@@ -85,9 +94,10 @@ class EmployeeServiceMySQL extends \MySqlDatabase
                 ":isActive" => $result['isActive'] ? $result['isActive'] : $existingEmployee['isActive']
             ));
             echo "Employee updated";
-
+            return true;
         } catch (\PDOException $e) {
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -95,12 +105,14 @@ class EmployeeServiceMySQL extends \MySqlDatabase
     {
         try {
             $this->tryGetById($id);
-            $stmt = $this->connection->prepare('DELETE FROM employees WHERE id = :id');
+            $stmt = $this->db->prepare('DELETE FROM employees WHERE id = :id');
             $stmt->bindParam(':id', $id);
             $stmt->execute();
             echo "Employee deleted!";
+            return true;
         } catch (\PDOException $e) {
             echo 'Error: ' . $e->getMessage();
+            return false;
         }
     }
 }

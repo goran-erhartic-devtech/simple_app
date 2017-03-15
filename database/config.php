@@ -13,6 +13,7 @@ define ( 'DB_PASS', 'root' );
 
 //USE MySQL Database
 include_once 'MySqlDatabase.php';
+$db = new \GE\Person\EmployeeServiceMySQL();
 
 //USE Mongo Database
 //include_once 'MongoDatabase.php';

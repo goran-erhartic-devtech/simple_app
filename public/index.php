@@ -9,24 +9,29 @@ require_once(__DIR__ . '/../bootstrap/bootstrap.php');
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($db, $twig) {
 //start of Employee CRUD
+    //GET ALL
     $r->addRoute('GET', '/employees', function () use ($db, $twig) {
         $template = $twig->load('employees.twig')->render(array(
             'obj' => $db->getAll()
         ));
         echo $template;
     });
+    //GET ONE BY ID
     $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($db, $twig) {
         $template = $twig->load('employee.twig')->render(array(
             'obj' => $db->getOne($vars['id'])
         ));
         echo $template;
     });
+    //CREATE
     $r->addRoute('POST', '/employee', function () use ($db) {
         return $db->create($_POST);
     });
+    //DELETE
     $r->addRoute('DELETE', '/employee/{id:\d+}', function ($vars) use ($db) {
         return $db->delete($vars['id']);
     });
+    //UPDATE
     $r->addRoute('PUT', '/employee/{id:\d+}', function ($vars) use ($db) {
         parse_str(file_get_contents('php://input'), $_PUT);
         return $db->update($vars['id'], $_PUT);
