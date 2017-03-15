@@ -11,3 +11,7 @@ CREATE TABLE `guest`.`employees` (
 
 
 INSERT INTO `guest`.`employees` (`Name`, `Age`, `Project`, `Department`, `isActive`) VALUES ('Goran', '31', 'Onboarding', 'PHP', '1');
+INSERT INTO `guest`.`employees` (`Name`, `Age`, `Project`, `Department`, `isActive`) VALUES ('Igor', '23', 'Ensighten', 'JS', '0');
+INSERT INTO `guest`.`employees` (`Name`, `Age`, `Project`, `Department`, `isActive`) VALUES ('Mina', '41', 'AppRiver', '.NET', '1');
+INSERT INTO `guest`.`employees` (`Name`, `Age`, `Project`, `Department`, `isActive`) VALUES ('Uros', '65', 'SwissCom', 'QA', '0');
+
