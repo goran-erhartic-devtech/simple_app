@@ -1,0 +1,5 @@
+use guest
+
+db.employees.insert({id: 1, name:"Goran", age:31, project:"Onboarding", department:"PHP", isActive:1})
+db.employees.insert({id: 2,name:"JohnDoe", age:36, project:"NekiProjekat", department:"QA", isActive:0})
+db.employees.insert({id: 3,name:"Gari", age:44, project:"Swisscom", department:".NET", isActive:1})
