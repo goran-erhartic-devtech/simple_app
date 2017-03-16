@@ -1,13 +1,18 @@
 <?php
+//*** MONGODB TO BE ADDED ***
+/*
+$manager = new MongoDB\Driver\Manager("mongodb://localhost:27017");
 
-/**
- * Created by PhpStorm.
- * User: goran.erhartic
- * Date: 13/3/2017
- * Time: 12:34 PM
- */
+$query = new MongoDB\Driver\Query([]);
 
-class MySqlDatabase
+$rows = $manager->executeQuery("bla.users", $query);
+
+foreach ($rows as $row) {
+
+    echo "IME: $row->name\n";
+}*/
+
+class MongoDatabase
 {
     private $db;
     private static $_instance;
@@ -18,7 +23,7 @@ class MySqlDatabase
     */
     public static function getInstance()
     {
-        if (!self::$_instance) { // If no instance then make one
+        if (!self::$_instance) {
             self::$_instance = new self();
         }
         return self::$_instance;
@@ -28,9 +33,8 @@ class MySqlDatabase
     private function __construct()
     {
         try {
-            $this->db = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
+            $this->db = new MongoDB\Driver\Manager("mongodb://" . DB_HOST . ":27017");
+        } catch (MongoConnectionException $e) {
             echo $e->getMessage();
         }
     }

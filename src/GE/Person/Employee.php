@@ -9,9 +9,28 @@ namespace GE\Person;
 
 class Employee extends AbstractHuman implements EmployeeInterface
 {
+    protected $id;
     protected $department;
     protected $project;
     protected $is_active;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
 
     /**
      * @return mixed

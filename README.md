@@ -6,4 +6,16 @@
 
 - In the browser go to this address: localhost
 
-- Routes that are currently working are '/', '/managers', '/employees', '/manager/{id}' and '/employee/{id}'
+- Routes that are currently working (view) are '/', '/employees', and '/employee/{id}'
+
+- Implemented CRUD:
+    - GET   - '/employees'          (returns all employees from DB)
+    - GET   - '/employee/{id}'      (return employee by ID)
+    - POST  - '/employee'           (create new employee: Name(str), Age(int), Project(str), Department(str), isActive(tinyint))
+    - PUT (MySQL only)   - '/employee/{id}'      (edit employee with ID: Name(str), Age(int), Project(str), Department(str), isActive(tinyint))
+    - DELETE (MySQL only) - '/employee/{id}'     (delete employee by ID)
+    
+    <br><br>
+    ** PUT and POST through 'x-www-form-urlencoded'
+    <br>
+    ** Name and Age are set to be NotNull
