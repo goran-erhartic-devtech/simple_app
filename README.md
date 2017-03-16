@@ -14,6 +14,7 @@
     - POST  - '/employee'           (create new employee: Name(str), Age(int), Project(str), Department(str), isActive(tinyint))
     - PUT (MySQL only)   - '/employee/{id}'      (edit employee with ID: Name(str), Age(int), Project(str), Department(str), isActive(tinyint))
     - DELETE (MySQL only) - '/employee/{id}'     (delete employee by ID)
+    
     <br><br>
     ** PUT and POST through 'x-www-form-urlencoded'
     <br>

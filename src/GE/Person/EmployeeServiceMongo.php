@@ -64,9 +64,13 @@ class EmployeeServiceMongo
     public function create($result)
     {
         //Auto-increment ID
-        $query = new Query([]);
-        $lastId = sizeof($this->db->executeQuery(TABLE_USER, $query)->toArray());
-        $newId = $lastId + 1;
+        $query = new Query([],['sort' => ['id' => -1], 'limit' => 1]);
+        $rows = $this->db->executeQuery(TABLE_USER, $query);
+        $lastId = 0;
+        foreach ($rows as $res) {
+            $lastId = $res->id;
+        }
+        $newId = $lastId+1;
 
         $write = new BulkWrite();
         $write->insert(['id' => $newId, 'name' => $result['Name'], 'age' => $result['Age'], 'project' => $result['Project'], 'department' => $result['Department'], 'isActive' => $result['isActive']]);
