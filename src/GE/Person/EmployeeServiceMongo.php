@@ -77,6 +77,21 @@ class EmployeeServiceMongo
         $this->db->executeBulkWrite(TABLE_USER, $write);
     }
 
+    public function delete($id){
+        try {
+            $query = new Query(['id' => intval($id)]);
+            $this->tryGetById($query, $id);
+
+            $delete = new BulkWrite();
+            $delete->delete(['id' => intval($id)]);
+            $this->db->executeBulkWrite(TABLE_USER, $delete);
+
+            echo "User with ID: $id has been deleted";
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
+    }
+
     /**
      * @param $query
      * @param $id
