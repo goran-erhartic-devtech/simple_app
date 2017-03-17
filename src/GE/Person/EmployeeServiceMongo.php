@@ -11,13 +11,18 @@ namespace GE\Person;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\WriteConcern;
+use SimpleLogger\File;
 
-class EmployeeServiceMongo
+class EmployeeServiceMongo implements EmployeeInterface
 {
+    private $db;
+    private $logger;
+
     public function __construct()
     {
         $connection = \MongoDatabase::getInstance();
         $this->db = $connection->getConnection();
+        $this->logger = new File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
     }
 
     public function getAll()
@@ -42,9 +47,11 @@ class EmployeeServiceMongo
                     ->setIsActive($result->isActive);
                 array_push($allEmployees, $viewEmployee);
             }
+            $this->logger->info('[MongoDB] - Returned all Employees from DB');
             return $allEmployees;
         } catch (\Exception $e) {
             echo $e->getMessage();
+            $this->logger->error('[MongoDB] - Failed to get all employees from empty database');
             return false;
         }
     }
@@ -62,9 +69,11 @@ class EmployeeServiceMongo
                 ->setProject($employee[0]->project)
                 ->setDepartment($employee[0]->department)
                 ->setIsActive($employee[0]->isActive);
+            $this->logger->info("[MongoDB] - Returned employee {$employee[0]->name} by ID: #{$id}");
             return $viewEmployee;
         } catch (\Exception $e) {
             echo $e->getMessage();
+            $this->logger->error("[MongoDB] - Failed to get user by this ID: #{$id}");
             return false;
         }
     }
@@ -93,10 +102,14 @@ class EmployeeServiceMongo
                     'department' => $result['Department'],
                     'isActive' => $result['isActive']]);
                 $this->db->executeBulkWrite(TABLE_USER, $write);
+                $this->logger->info("[MongoDB] - Created new employee {$result['Name']} with ID: #{$newId}");
                 echo "New user has been created";
+                return true;
             }
         } catch (\Exception $e) {
+            $this->logger->error("[MongoDB] - Failed to create new employee");
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -110,9 +123,13 @@ class EmployeeServiceMongo
             $delete->delete(['id' => intval($id)]);
             $this->db->executeBulkWrite(TABLE_USER, $delete);
 
-            echo "User with ID: $id has been deleted";
+            $this->logger->info("[MongoDB] - Deleted employee with ID: #{$id}");
+            echo "User with ID: #{$id} has been deleted";
+            return true;
         } catch (\Exception $e) {
+            $this->logger->error("[MongoDB] - Failed to delete user with ID: #{$id}");
             echo $e->getMessage();
+            return false;
         }
     }
 
@@ -140,9 +157,14 @@ class EmployeeServiceMongo
             ]]);
             $writeConcern = new WriteConcern(WriteConcern::MAJORITY, 1000);
             $this->db->executeBulkWrite(TABLE_USER, $update, $writeConcern);
+
+            $this->logger->info("[MongoDB] - Employee with ID: #{$id} has been updated");
             echo "User with ID: $id has been updated";
+            return true;
         } catch (\Exception $e) {
+            $this->logger->error("[MongoDB] - Failed to update employee with ID: #{$id}");
             echo $e->getMessage();
+            return false;
         }
     }
 

@@ -1,6 +1,4 @@
 # SIMPLE APP
 
-* Added quickMongoDB.txt in 'database' folder for a quick collection setup
-
-* UPDATE route in postman: PUT -> localhost/employee/{id}
-    - Exception handling when trying to update a nonexisting user
+* Implemented SimpleLogger - https://github.com/fguillot/simpleLogger
+* Log file can be found in 'public/log' folder

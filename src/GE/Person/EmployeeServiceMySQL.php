@@ -8,13 +8,18 @@
  */
 namespace GE\Person;
 
-class EmployeeServiceMySQL
+use SimpleLogger\File;
+
+class EmployeeServiceMySQL implements EmployeeInterface
 {
+    private $db;
+    private $logger;
 
     public function __construct()
     {
         $connection = \MySqlDatabase::getInstance();
         $this->db = $connection->getConnection();
+        $this->logger = new File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
     }
 
     public function tryGetById($id)
@@ -35,12 +40,18 @@ class EmployeeServiceMySQL
             $result = $this->tryGetById($id);
 
             $viewEmployee = new Employee();
-            $viewEmployee->setName($result['Name'])->setAge($result['Age'])->setProject($result['Project'])->setDepartment($result['Department'])->setIsActive($result['isActive']);
+            $viewEmployee
+                ->setName($result['Name'])
+                ->setAge($result['Age'])
+                ->setProject($result['Project'])
+                ->setDepartment($result['Department'])
+                ->setIsActive($result['isActive']);
 
+            $this->logger->info("[MySQL] - Returned employee {$result['Name']} by ID: #{$id}");
             return $viewEmployee;
-
         } catch (\PDOException $e) {
             echo $e->getMessage();
+            $this->logger->error("[MySQL] - Failed to get user by this ID: #{$id}");
             return false;
         }
     }
@@ -53,9 +64,15 @@ class EmployeeServiceMySQL
 
         foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $result) {
             $viewEmployee = new Employee();
-            $viewEmployee->setName($result['Name'])->setAge($result['Age'])->setProject($result['Project'])->setDepartment($result['Department'])->setIsActive($result['isActive']);
+            $viewEmployee
+                ->setName($result['Name'])
+                ->setAge($result['Age'])
+                ->setProject($result['Project'])
+                ->setDepartment($result['Department'])
+                ->setIsActive($result['isActive']);
             array_push($allEmployees, $viewEmployee);
         }
+        $this->logger->info('[MySQL] - Returned all Employees from DB');
         return $allEmployees;
     }
 
@@ -72,8 +89,10 @@ class EmployeeServiceMySQL
                 "isActive" => $result['isActive']
             ));
             echo "Employee created";
+            $this->logger->info("[MySQL] - Created new employee {$result['Name']}");
             return true;
         } catch (\PDOException $e) {
+            $this->logger->error("[MySQL] - Failed to create new employee");
             echo $e->getMessage();
             return false;
         }
@@ -94,8 +113,10 @@ class EmployeeServiceMySQL
                 ":isActive" => $result['isActive'] ? $result['isActive'] : $existingEmployee['isActive']
             ));
             echo "Employee updated";
+            $this->logger->info("[MySQL] - Employee with ID: #{$id} has been updated");
             return true;
         } catch (\PDOException $e) {
+            $this->logger->error("[MySQL] - Failed to update employee with ID: #{$id}");
             echo $e->getMessage();
             return false;
         }
@@ -108,10 +129,12 @@ class EmployeeServiceMySQL
             $stmt = $this->db->prepare('DELETE FROM employees WHERE id = :id');
             $stmt->bindParam(':id', $id);
             $stmt->execute();
+            $this->logger->info("[MySQL] - Deleted employee with ID: #{$id}");
             echo "Employee deleted!";
             return true;
         } catch (\PDOException $e) {
-            echo 'Error: ' . $e->getMessage();
+            $this->logger->error("[MySQL] - Failed to delete user with ID: #{$id}");
+            echo $e->getMessage();
             return false;
         }
     }

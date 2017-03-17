@@ -12,6 +12,8 @@
  *  MongoDB: 'mongodb';
  */
 $use_database = 'mongodb';
+$logger = new \SimpleLogger\File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
+
 
 try {
     define('DB_USER', 'admin'); //MySQL -> root ; MongoDB -> admin
@@ -29,6 +31,7 @@ try {
             $db = new \GE\Person\EmployeeServiceMongo();
             break;
         default:
+            $logger->error("Failed to connect to database!!!");
             throw new Exception("MUST DEFINE A VALID DATABASE");
     }
 }catch(Exception $e){

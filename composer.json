@@ -1,7 +1,8 @@
 {
   "require": {
     "nikic/fast-route": "^1.2",
-    "twig/twig": "~2.0"
+    "twig/twig": "~2.0",
+    "fguillot/simpleLogger": "@stable"
   },
   "autoload": {
     "psr-4": {

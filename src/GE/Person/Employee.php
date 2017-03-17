@@ -7,7 +7,7 @@
  */
 namespace GE\Person;
 
-class Employee extends AbstractHuman implements EmployeeInterface
+class Employee extends AbstractHuman
 {
     protected $id;
     protected $department;
