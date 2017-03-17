@@ -1,13 +1,7 @@
 <?php
+//*** MONGODB TO BE ADDED ***
 
-/**
- * Created by PhpStorm.
- * User: goran.erhartic
- * Date: 13/3/2017
- * Time: 12:34 PM
- */
-
-class MySqlDatabase
+class MongoDatabase
 {
     private $db;
     private static $_instance;
@@ -18,7 +12,7 @@ class MySqlDatabase
     */
     public static function getInstance()
     {
-        if (!self::$_instance) { // If no instance then make one
+        if (!self::$_instance) {
             self::$_instance = new self();
         }
         return self::$_instance;
@@ -28,9 +22,8 @@ class MySqlDatabase
     private function __construct()
     {
         try {
-            $this->db = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
+            $this->db = new MongoDB\Driver\Manager("mongodb://".DB_USER.":".DB_PASS."@" . DB_HOST . ":27017");
+        } catch (MongoConnectionException $e) {
             echo $e->getMessage();
         }
     }

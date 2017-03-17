@@ -8,10 +8,7 @@
 
 //Include composer autoload.
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once(__DIR__ . '/../database/MySqlDatabase.php');
-
-//initiate connection to database and enable functions from service class
-$db = new \GE\Person\EmployeeServiceMySQL();
+require_once(__DIR__ . '/../database/config.php');
 
 //Twig template engine initialization
 $loader = new Twig_Loader_Filesystem('templates');

@@ -9,5 +9,9 @@ namespace GE\Person;
 
 interface EmployeeInterface
 {
-    public function iterateProperties();
+    public function getAll();
+    public function getOne($id);
+    public function create($result);
+    public function update($id, $result);
+    public function delete($id);
 }
