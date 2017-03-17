@@ -14,17 +14,16 @@
 $use_database = 'mongodb';
 
 try {
+    define('DB_USER', 'admin'); //MySQL -> root ; MongoDB -> admin
+    define('DB_PASS', 'admin'); //MySQL -> root ; MongoDB -> admin
+    define('DB_HOST', 'localhost');
     switch ($use_database) {
         case 'mysql':
-            define('DB_HOST', 'localhost');
             define('DB_NAME', 'guest');
-            define('DB_USER', 'root');
-            define('DB_PASS', 'root');
             include_once 'MySqlDatabase.php';
             $db = new \GE\Person\EmployeeServiceMySQL();
             break;
         case 'mongodb':
-            define('DB_HOST', 'localhost');
             define('TABLE_USER', "guest.employees");
             include_once 'MongoDatabase.php';
             $db = new \GE\Person\EmployeeServiceMongo();

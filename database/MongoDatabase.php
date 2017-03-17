@@ -33,7 +33,7 @@ class MongoDatabase
     private function __construct()
     {
         try {
-            $this->db = new MongoDB\Driver\Manager("mongodb://" . DB_HOST . ":27017");
+            $this->db = new MongoDB\Driver\Manager("mongodb://".DB_USER.":".DB_PASS."@" . DB_HOST . ":27017");
         } catch (MongoConnectionException $e) {
             echo $e->getMessage();
         }
