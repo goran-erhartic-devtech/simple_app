@@ -1,4 +1,6 @@
 # SIMPLE APP
 
-* DELETE route in postman: localhost/employee/{id}
-    - Exception handling if trying to delete a non existant user from MongoDB
+* Added quickMongoDB.txt in 'database' folder for a quick collection setup
+
+* UPDATE route in postman: PUT -> localhost/employee/{id}
+    - Exception handling when trying to update a nonexisting user
