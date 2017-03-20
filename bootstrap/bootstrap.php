@@ -9,6 +9,8 @@
 //Include composer autoload.
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once(__DIR__ . '/../database/config.php');
+require_once(__DIR__ . '/../database/AbstractDatabase.php');
+require_once(__DIR__ . '/../database/DatabaseInterface.php');
 
 //Twig template engine initialization
 $loader = new Twig_Loader_Filesystem('templates');
