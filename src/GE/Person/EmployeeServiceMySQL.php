@@ -8,18 +8,16 @@
  */
 namespace GE\Person;
 
-use SimpleLogger\File;
-
 class EmployeeServiceMySQL implements EmployeeInterface
 {
     private $db;
     private $logger;
 
-    public function __construct()
+    public function __construct($container)
     {
         $connection = \MySqlDatabase::getInstance();
         $this->db = $connection->getConnection();
-        $this->logger = new File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
+        $this->logger = $container['logger'];
     }
 
     public function tryGetById($id)

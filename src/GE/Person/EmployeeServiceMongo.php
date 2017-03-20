@@ -11,18 +11,17 @@ namespace GE\Person;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\WriteConcern;
-use SimpleLogger\File;
 
 class EmployeeServiceMongo implements EmployeeInterface
 {
     private $db;
     private $logger;
 
-    public function __construct()
+    public function __construct($container)
     {
         $connection = \MongoDatabase::getInstance();
         $this->db = $connection->getConnection();
-        $this->logger = new File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
+        $this->logger = $container['logger'];
     }
 
     public function getAll()
@@ -174,7 +173,8 @@ class EmployeeServiceMongo implements EmployeeInterface
      * @return array
      * @throws \Exception
      */
-    public function tryGetById($query, $id)
+
+    private function tryGetById($query, $id)
     {
         $check = $this->db->executeQuery(TABLE_USER, $query)->toArray();
         if (sizeof($check) < 1) {
