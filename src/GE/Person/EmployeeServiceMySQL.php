@@ -13,6 +13,10 @@ class EmployeeServiceMySQL implements EmployeeInterface
     private $db;
     private $logger;
 
+    /**
+     * EmployeeServiceMySQL constructor.
+     * @param $container
+     */
     public function __construct($container)
     {
         $connection = \MySqlDatabase::getInstance();
@@ -20,18 +24,10 @@ class EmployeeServiceMySQL implements EmployeeInterface
         $this->logger = $container['logger'];
     }
 
-    public function tryGetById($id)
-    {
-        $stmt = $this->db->prepare("SELECT * from employees WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
-        } else {
-            throw new \PDOException("User with ID: " . $id . " not found");
-        }
-    }
-
+    /**
+     * @param $id
+     * @return bool|Employee
+     */
     public function getOne($id)
     {
         try {
@@ -54,6 +50,9 @@ class EmployeeServiceMySQL implements EmployeeInterface
         }
     }
 
+    /**
+     * @return array
+     */
     public function getAll()
     {
         $allEmployees = array();
@@ -74,6 +73,10 @@ class EmployeeServiceMySQL implements EmployeeInterface
         return $allEmployees;
     }
 
+    /**
+     * @param $result
+     * @return bool
+     */
     public function create($result)
     {
         try {
@@ -96,6 +99,11 @@ class EmployeeServiceMySQL implements EmployeeInterface
         }
     }
 
+    /**
+     * @param $id
+     * @param $result
+     * @return bool
+     */
     public function update($id, $result)
     {
         try {
@@ -120,6 +128,10 @@ class EmployeeServiceMySQL implements EmployeeInterface
         }
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function delete($id)
     {
         try {
@@ -134,6 +146,23 @@ class EmployeeServiceMySQL implements EmployeeInterface
             $this->logger->error("[MySQL] - Failed to delete user with ID: #{$id}");
             echo $e->getMessage();
             return false;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \PDOException
+     */
+    private function tryGetById($id)
+    {
+        $stmt = $this->db->prepare("SELECT * from employees WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } else {
+            throw new \PDOException("User with ID: " . $id . " not found");
         }
     }
 }

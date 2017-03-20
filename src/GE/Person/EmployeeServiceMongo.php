@@ -17,6 +17,10 @@ class EmployeeServiceMongo implements EmployeeInterface
     private $db;
     private $logger;
 
+    /**
+     * EmployeeServiceMongo constructor.
+     * @param $container
+     */
     public function __construct($container)
     {
         $connection = \MongoDatabase::getInstance();
@@ -24,6 +28,9 @@ class EmployeeServiceMongo implements EmployeeInterface
         $this->logger = $container['logger'];
     }
 
+    /**
+     * @return array|bool
+     */
     public function getAll()
     {
         try {
@@ -55,6 +62,10 @@ class EmployeeServiceMongo implements EmployeeInterface
         }
     }
 
+    /**
+     * @param $id
+     * @return bool|Employee
+     */
     public function getOne($id)
     {
         try {
@@ -77,6 +88,10 @@ class EmployeeServiceMongo implements EmployeeInterface
         }
     }
 
+    /**
+     * @param $result
+     * @return bool
+     */
     public function create($result)
     {
         try {
@@ -112,6 +127,10 @@ class EmployeeServiceMongo implements EmployeeInterface
         }
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function delete($id)
     {
         try {
@@ -132,6 +151,11 @@ class EmployeeServiceMongo implements EmployeeInterface
         }
     }
 
+    /**
+     * @param $id
+     * @param $info
+     * @return bool
+     */
     public function update($id, $info)
     {
         try {
