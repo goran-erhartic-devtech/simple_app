@@ -7,11 +7,8 @@
  * Time: 12:34 PM
  */
 
-class MySqlDatabase
+class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
 {
-    private $db;
-    private static $_instance;
-
     /*
     Get an instance of the Database
     @return Instance
@@ -22,6 +19,12 @@ class MySqlDatabase
             self::$_instance = new self();
         }
         return self::$_instance;
+    }
+
+    // Get mysql pdo connection
+    public function getConnection()
+    {
+        return $this->db;
     }
 
     // Constructor
@@ -38,11 +41,5 @@ class MySqlDatabase
     // Prevent duplication of connection
     private function __clone()
     {
-    }
-
-    // Get mysql pdo connection
-    public function getConnection()
-    {
-        return $this->db;
     }
 }

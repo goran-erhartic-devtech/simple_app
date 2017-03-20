@@ -1,11 +1,14 @@
 <?php
-//*** MONGODB TO BE ADDED ***
 
-class MongoDatabase
+/**
+ * Created by PhpStorm.
+ * User: goran.erhartic
+ * Date: 14/3/2017
+ * Time: 3:25 PM
+ */
+
+class MongoDatabase extends AbstractDatabase implements DatabaseInterface
 {
-    private $db;
-    private static $_instance;
-
     /*
     Get an instance of the Database
     @return Instance
@@ -16,6 +19,12 @@ class MongoDatabase
             self::$_instance = new self();
         }
         return self::$_instance;
+    }
+
+    // Get MongoDB connection
+    public function getConnection()
+    {
+        return $this->db;
     }
 
     // Constructor
@@ -31,11 +40,5 @@ class MongoDatabase
     // Prevent duplication of connection
     private function __clone()
     {
-    }
-
-    // Get mysql pdo connection
-    public function getConnection()
-    {
-        return $this->db;
     }
 }
