@@ -1,5 +1,5 @@
 <?php
-
+namespace Database;
 /**
  * Created by PhpStorm.
  * User: goran.erhartic

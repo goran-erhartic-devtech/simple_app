@@ -7,6 +7,8 @@
  * Time: 3:25 PM
  */
 
+namespace Database;
+
 class MongoDatabase extends AbstractDatabase implements DatabaseInterface
 {
     /*
@@ -31,8 +33,8 @@ class MongoDatabase extends AbstractDatabase implements DatabaseInterface
     private function __construct()
     {
         try {
-            $this->db = new MongoDB\Driver\Manager("mongodb://".DB_USER.":".DB_PASS."@" . DB_HOST . ":27017");
-        } catch (MongoConnectionException $e) {
+            $this->db = new \MongoDB\Driver\Manager("mongodb://".DB_USER.":".DB_PASS."@" . DB_HOST . ":27017");
+        } catch (\MongoConnectionException $e) {
             echo $e->getMessage();
         }
     }

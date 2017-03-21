@@ -8,6 +8,7 @@
 
 namespace GE\Person;
 
+use Database\MongoDatabase;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\WriteConcern;
@@ -23,7 +24,7 @@ class EmployeeServiceMongo implements EmployeeInterface
      */
     public function __construct($container)
     {
-        $connection = \MongoDatabase::getInstance();
+        $connection = MongoDatabase::getInstance();
         $this->db = $connection->getConnection();
         $this->logger = $container['logger'];
     }

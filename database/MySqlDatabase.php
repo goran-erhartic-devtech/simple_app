@@ -7,6 +7,8 @@
  * Time: 12:34 PM
  */
 
+namespace Database;
+
 class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
 {
     /*
@@ -31,9 +33,9 @@ class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
     private function __construct()
     {
         try {
-            $this->db = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
+            $this->db = new \PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+            $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        } catch (\PDOException $e) {
             echo $e->getMessage();
         }
     }

@@ -8,6 +8,8 @@
  */
 namespace GE\Person;
 
+use Database\MySqlDatabase;
+
 class EmployeeServiceMySQL implements EmployeeInterface
 {
     private $db;
@@ -19,7 +21,7 @@ class EmployeeServiceMySQL implements EmployeeInterface
      */
     public function __construct($container)
     {
-        $connection = \MySqlDatabase::getInstance();
+        $connection = MySqlDatabase::getInstance();//\MySqlDatabase::getInstance();
         $this->db = $connection->getConnection();
         $this->logger = $container['logger'];
     }
