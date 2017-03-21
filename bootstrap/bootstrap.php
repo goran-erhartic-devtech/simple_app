@@ -12,17 +12,24 @@ require_once __DIR__ . '/../vendor/autoload.php';
 //Load database configuration
 require_once(__DIR__ . '/../database/config.php');
 
-//Twig template engine initialization
-$loader = new Twig_Loader_Filesystem('templates');
-$twig = new Twig_Environment($loader, array(
-    'auto_reload' => true,
-    'cache' => '/cache'
-));
-
 //Instantiate a DI container
 $container = new \Pimple\Container();
+
+//SimpleLogger initialization through Pimple
 $container['logger'] = function(){
     return new \SimpleLogger\File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
+};
+
+//Twig template engine initialization through Pimple
+$container['twig_loader'] = function () {
+    return new Twig_Loader_Filesystem('templates');
+};
+
+$container['twig'] = function ($c) {
+    return new Twig_Environment($c['twig_loader'], array(
+        'auto_reload' => true,
+        'cache' => '/cache'
+    ));
 };
 
 try {

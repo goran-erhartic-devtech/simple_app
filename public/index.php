@@ -7,18 +7,18 @@
  */
 require_once(__DIR__ . '/../bootstrap/bootstrap.php');
 
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($container, $twig) {
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($container) {
 //start of Employee CRUD
     //GET ALL
-    $r->addRoute('GET', '/employees', function () use ($container, $twig) {
-        $template = $twig->load('employees.twig')->render(array(
+    $r->addRoute('GET', '/employees', function () use ($container) {
+        $template = $container['twig']->load('employees.twig')->render(array(
             'obj' => $container['db']->getAll()
         ));
         echo $template;
     });
     //GET ONE BY ID
-    $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($container, $twig) {
-        $template = $twig->load('employee.twig')->render(array(
+    $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($container) {
+        $template = $container['twig']->load('employee.twig')->render(array(
             'obj' => $container['db']->getOne($vars['id'])
         ));
         echo $template;
