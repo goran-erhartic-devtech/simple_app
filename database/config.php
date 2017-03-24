@@ -11,9 +11,10 @@
  *  MySQL: 'mysql';
  *  MongoDB: 'mongodb';
  */
-define('DATABASE', 'mongodb');
+define('DATABASE', 'mysql');
 
-define('DB_USER', 'admin'); //MySQL -> root ; MongoDB -> admin
-define('DB_PASS', 'admin'); //MySQL -> root ; MongoDB -> admin
+define('DB_USER', 'root'); //MySQL -> root ; MongoDB -> admin
+define('DB_PASS', 'root'); //MySQL -> root ; MongoDB -> admin
 define('DB_HOST', 'localhost');
 define('TABLE_USER', "guest.employees");
+define('DB_NAME', 'guest');

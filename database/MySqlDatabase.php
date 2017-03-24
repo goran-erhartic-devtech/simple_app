@@ -11,10 +11,11 @@ namespace Database;
 
 class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
 {
-    /*
-    Get an instance of the Database
-    @return Instance
-    */
+
+    /**
+     * Get an instance of the Database
+     * @return MySqlDatabase
+     */
     public static function getInstance()
     {
         if (!self::$_instance) { // If no instance then make one
@@ -23,13 +24,18 @@ class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
         return self::$_instance;
     }
 
-    // Get mysql pdo connection
+    /**
+     * Get mysql pdo connection
+     * @return \PDO
+     */
     public function getConnection()
     {
         return $this->db;
     }
 
-    // Constructor
+    /**
+     * MySqlDatabase constructor.
+     */
     private function __construct()
     {
         try {
@@ -40,7 +46,9 @@ class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
         }
     }
 
-    // Prevent duplication of connection
+    /**
+     *Prevent duplication of connection
+     */
     private function __clone()
     {
     }

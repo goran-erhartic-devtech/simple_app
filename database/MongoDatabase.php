@@ -11,10 +11,11 @@ namespace Database;
 
 class MongoDatabase extends AbstractDatabase implements DatabaseInterface
 {
-    /*
-    Get an instance of the Database
-    @return Instance
-    */
+
+    /**
+     * Get an instance of the Database
+     * @return MongoDatabase
+     */
     public static function getInstance()
     {
         if (!self::$_instance) {
@@ -23,23 +24,30 @@ class MongoDatabase extends AbstractDatabase implements DatabaseInterface
         return self::$_instance;
     }
 
-    // Get MongoDB connection
+    /**
+     * Get MongoDB connection
+     * @return \MongoDB\Driver\Manager
+     */
     public function getConnection()
     {
         return $this->db;
     }
 
-    // Constructor
+    /**
+     * MongoDatabase constructor.
+     */
     private function __construct()
     {
         try {
-            $this->db = new \MongoDB\Driver\Manager("mongodb://".DB_USER.":".DB_PASS."@" . DB_HOST . ":27017");
+            $this->db = new \MongoDB\Driver\Manager("mongodb://" . DB_USER . ":" . DB_PASS . "@" . DB_HOST . ":27017");
         } catch (\MongoConnectionException $e) {
             echo $e->getMessage();
         }
     }
 
-    // Prevent duplication of connection
+    /**
+     * Prevent duplication of connection
+     */
     private function __clone()
     {
     }

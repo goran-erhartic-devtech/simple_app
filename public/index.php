@@ -12,29 +12,29 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     //GET ALL
     $r->addRoute('GET', '/employees', function () use ($container) {
         $template = $container['twig']->load('employees.twig')->render(array(
-            'obj' => $container['db']->getAll()
+            'obj' => $container['employee_service']->getAll()
         ));
         echo $template;
     });
     //GET ONE BY ID
     $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($container) {
         $template = $container['twig']->load('employee.twig')->render(array(
-            'obj' => $container['db']->getOne($vars['id'])
+            'obj' => $container['employee_service']->getOne($vars['id'])
         ));
         echo $template;
     });
     //CREATE
     $r->addRoute('POST', '/employee', function () use ($container) {
-        return $container['db']->create($_POST);
+        return $container['employee_service']->create($_POST);
     });
     //DELETE
     $r->addRoute('DELETE', '/employee/{id:\d+}', function ($vars) use ($container) {
-        return $container['db']->delete($vars['id']);
+        return $container['employee_service']->delete($vars['id']);
     });
     //UPDATE
     $r->addRoute('PUT', '/employee/{id:\d+}', function ($vars) use ($container) {
         parse_str(file_get_contents('php://input'), $_PUT);
-        return $container['db']->update($vars['id'], $_PUT);
+        return $container['employee_service']->update($vars['id'], $_PUT);
     });
 //end of Employee CRUD
 
