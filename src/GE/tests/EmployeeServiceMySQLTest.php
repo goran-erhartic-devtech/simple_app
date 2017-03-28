@@ -22,30 +22,61 @@ define('DB_NAME', 'guest');
  */
 class EmployeeServiceMySQLTest extends TestCase
 {
-    private $database;
-    private $instance;
+    private $db_instance;
+    private $employee_service;
     private $container;
 
     public function setUp()
     {
-        $this->instance = \Database\MySqlDatabase::getInstance();
+        $this->db_instance = \Database\MySqlDatabase::getInstance();
+        $this->db_instance->getConnection()->beginTransaction();
         $this->container = new Pimple\Container();
         $this->container['logger'] = function () {
             return new \SimpleLogger\File('log.log');
         };
-        $this->database = new EmployeeServiceMySQL($this->instance, $this->container);
+        $this->employee_service = new EmployeeServiceMySQL($this->db_instance, $this->container);
+
+        /*
+         * Clean up log.log file after the test
+         */
+        register_shutdown_function(function() {
+            if(file_exists('log.log')) {
+                unlink('log.log');
+            }
+        });
+    }
+
+    public function tearDown()
+    {
+        $this->db_instance->getConnection()->rollBack();
     }
 
     public function testGetOne()
     {
-        $oneEmployee = $this->database->getOne(1);
+        $oneEmployee = $this->employee_service->getOne(1);
         $this->assertNotEmpty($oneEmployee);
         $this->assertLessThanOrEqual(1, sizeof($oneEmployee));
     }
 
     public function testGetAll()
     {
-        $allEmployees = $this->database->getAll();
+        $allEmployees = $this->employee_service->getAll();
         $this->assertGreaterThan(0,sizeof($allEmployees));
+    }
+
+    public function testCreate(){
+
+        $a = $this->db_instance->getConnection()->prepare("INSERT INTO employees (Name, Age, Project, Department, isActive) VALUES (:fname, :age, :project, :department, :isActive)");
+        $a->execute(array(
+            "fname" => 'TestName',
+            "age" => 444,
+            "project" => 'asdf',
+            "department" => 'Department',
+            "isActive" => 1
+        ));
+
+        $stmt = $this->db_instance->getConnection()->prepare('SELECT * FROM employees WHERE Name = :fname');
+        $stmt->execute(array("fname" => 'TestName'));
+        $this->assertEquals(1, $stmt->rowCount());
     }
 }
