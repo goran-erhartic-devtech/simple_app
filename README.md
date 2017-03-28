@@ -1,4 +1,6 @@
 # SIMPLE APP
 
-* Implemented SimpleLogger - https://github.com/fguillot/simpleLogger
-* Log file can be found in 'public/log' folder
+* Implemented PHPUnit testing
+* There are two test
+    * one for Employee model and it's properties
+    * one for EmployeeService for getOne() and getAll() methods
