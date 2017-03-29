@@ -3,30 +3,30 @@
 /**
  * Created by PhpStorm.
  * User: goran.erhartic
- * Date: 13/3/2017
- * Time: 12:34 PM
+ * Date: 14/3/2017
+ * Time: 3:25 PM
  */
 
 namespace Database;
 
-class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
+class MongoDatabase extends AbstractDatabase implements DatabaseInterface
 {
 
     /**
      * Get an instance of the Database
-     * @return MySqlDatabase
+     * @return MongoDatabase
      */
     public static function getInstance()
     {
-        if (!self::$_instance) { // If no instance then make one
+        if (!self::$_instance) {
             self::$_instance = new self();
         }
         return self::$_instance;
     }
 
     /**
-     * Get mysql pdo connection
-     * @return \PDO
+     * Get MongoDB connection
+     * @return \MongoDB\Driver\Manager
      */
     public function getConnection()
     {
@@ -34,20 +34,19 @@ class MySqlDatabase extends AbstractDatabase implements DatabaseInterface
     }
 
     /**
-     * MySqlDatabase constructor.
+     * MongoDatabase constructor.
      */
     private function __construct()
     {
         try {
-            $this->db = new \PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
-            $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (\PDOException $e) {
+            $this->db = new \MongoDB\Driver\Manager("mongodb://" . DB_USER . ":" . DB_PASS . "@" . DB_HOST . ":27017");
+        } catch (\MongoConnectionException $e) {
             echo $e->getMessage();
         }
     }
 
     /**
-     *Prevent duplication of connection
+     * Prevent duplication of connection
      */
     private function __clone()
     {

@@ -8,14 +8,74 @@
 
 //Include composer autoload.
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once(__DIR__ . '/../database/MySqlDatabase.php');
 
-//initiate connection to database and enable functions from service class
-$db = new \GE\Person\EmployeeServiceMySQL();
+//Load database configuration
+require_once(__DIR__ . '/../database/config.php');
 
-//Twig template engine initialization
-$loader = new Twig_Loader_Filesystem('templates');
-$twig = new Twig_Environment($loader, array(
-    'auto_reload' => true,
-    'cache' => '/cache'
-));
+//Instantiate a DI container
+$container = new \Pimple\Container();
+
+
+/**
+ * SimpleLogger initialization through Pimple
+ * @return \SimpleLogger\File
+ */
+$container['logger'] = function(){
+    return new \SimpleLogger\File($_SERVER['DOCUMENT_ROOT'] . '\log\log.log');
+};
+
+/**
+ * Twig template engine initialization through Pimple
+ * @return Twig_Loader_Filesystem
+ */
+$container['twig_loader'] = function () {
+    return new Twig_Loader_Filesystem('templates');
+};
+
+/**
+ * @param $c
+ * @return Twig_Environment
+ */
+$container['twig'] = function ($c) {
+    return new Twig_Environment($c['twig_loader'], array(
+        'auto_reload' => true,
+        'cache' => '/cache'
+    ));
+};
+
+/**
+ * Get MySQL Database instance
+ * @return \Database\MySqlDatabase
+ */
+$container['mysql_instance'] = function(){
+    return \Database\MySqlDatabase::getInstance();
+};
+
+/**
+ * Get MongoDB Database instance
+ * @return \Database\MongoDatabase
+ */
+$container['mongodb_instance'] = function(){
+    return \Database\MongoDatabase::getInstance();
+};
+
+try {
+    switch (DATABASE) {
+        case 'mysql':
+            $container['employee_service'] = function ($container) {
+                return new \GE\Person\EmployeeServiceMySQL($container['mysql_instance'], $container);
+            };
+            break;
+        case 'mongodb':
+            $container['employee_service'] = function ($container) {
+                return new \GE\Person\EmployeeServiceMongo($container['mongodb_instance'], $container);
+            };
+            break;
+        default:
+            $container['logger']->error("Failed to connect to database!!!");
+            throw new Exception("MUST DEFINE A VALID DATABASE");
+    }
+}catch(Exception $e){
+    echo $e->getMessage();
+    die();
+}

@@ -7,37 +7,48 @@
  */
 require_once(__DIR__ . '/../bootstrap/bootstrap.php');
 
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($db) {
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) use ($container) {
 //start of Employee CRUD
-    $r->addRoute('GET', '/employees', function () use ($db) {
-        return $db->getAll();
+    //GET ALL
+    $r->addRoute('GET', '/employees', function () use ($container) {
+        $template = $container['twig']->load('employees.twig')->render(array(
+            'obj' => $container['employee_service']->getAll()
+        ));
+        echo $template;
     });
-    $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($db) {
-        return $db->getOne($vars['id']);
+    //GET ONE BY ID
+    $r->addRoute('GET', '/employee/{id:\d+}', function ($vars) use ($container) {
+        $template = $container['twig']->load('employee.twig')->render(array(
+            'obj' => $container['employee_service']->getOne($vars['id'])
+        ));
+        echo $template;
     });
-    $r->addRoute('POST', '/employee', function () use ($db) {
-        return $db->create($_POST);
+    //CREATE
+    $r->addRoute('POST', '/employee', function () use ($container) {
+        return $container['employee_service']->create($_POST);
     });
-    $r->addRoute('DELETE', '/employee/{id:\d+}', function ($vars) use ($db) {
-        return $db->delete($vars['id']);
+    //DELETE
+    $r->addRoute('DELETE', '/employee/{id:\d+}', function ($vars) use ($container) {
+        return $container['employee_service']->delete($vars['id']);
     });
-    $r->addRoute('PUT', '/employee/{id:\d+}', function ($vars) use ($db) {
+    //UPDATE
+    $r->addRoute('PUT', '/employee/{id:\d+}', function ($vars) use ($container) {
         parse_str(file_get_contents('php://input'), $_PUT);
-        return $db->update($vars['id'], $_PUT);
+        return $container['employee_service']->update($vars['id'], $_PUT);
     });
 //end of Employee CRUD
-    
-    $r->addRoute('GET', '/managers', function () {
-        $aa = new \GE\Person\Manager();
-        $aa->setName("Goran")->setAge(31)->setProject(array("one", "two", "three"));
-        return $aa;
-    });
-    $r->addRoute('GET', '/manager/{id:\d+}', function ($vars) {
-        echo "This will return Manager with this id: " . $vars['id'];
-    });
-    $r->addRoute('GET', '/', function () {
-        echo "WELCOME";
-    });
+
+//    $r->addRoute('GET', '/managers', function () {
+//        $aa = new \GE\Person\Manager();
+//        $aa->setName("Goran")->setAge(31)->setProject(array("one", "two", "three"));
+//        return $aa;
+//    });
+//    $r->addRoute('GET', '/manager/{id:\d+}', function ($vars) {
+//        echo "This will return Manager with this id: " . $vars['id'];
+//    });
+//    $r->addRoute('GET', '/', function () {
+//        echo "WELCOME";
+//    });
 });
 
 // Fetch method and URI from somewhere
@@ -65,13 +76,6 @@ switch ($routeInfo[0]) {
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
 
-        $obj = call_user_func($handler, $vars);
-        //if (is_file(substr('/templates/' . $_SERVER['REQUEST_URI'], 1) . '.twig')) {
-        $template = $twig->load('employee.twig')->render(array(
-            'obj' => $obj
-        ));
-        echo $template;
-        //}
+        call_user_func($handler, $vars);
         break;
 }
-
