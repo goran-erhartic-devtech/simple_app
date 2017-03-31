@@ -43,32 +43,24 @@ $container['twig'] = function ($c) {
     ));
 };
 
-/**
- * Get MySQL Database instance
- * @return \Database\MySqlDatabase
- */
-$container['mysql_instance'] = function(){
-    return \Database\MySqlDatabase::getInstance();
-};
 
 /**
- * Get MongoDB Database instance
- * @return \Database\MongoDatabase
+ * @return \Database\Database
  */
-$container['mongodb_instance'] = function(){
-    return \Database\MongoDatabase::getInstance();
+$container['db_instance'] = function(){
+    return \Database\Database::getInstance();
 };
 
 try {
     switch (DATABASE) {
         case 'mysql':
             $container['employee_service'] = function ($container) {
-                return new \GE\Person\EmployeeServiceMySQL($container['mysql_instance'], $container);
+                return new \GE\Person\EmployeeServiceMySQL($container['db_instance'], $container);
             };
             break;
         case 'mongodb':
             $container['employee_service'] = function ($container) {
-                return new \GE\Person\EmployeeServiceMongo($container['mongodb_instance'], $container);
+                return new \GE\Person\EmployeeServiceMongo($container['db_instance'], $container);
             };
             break;
         default:
